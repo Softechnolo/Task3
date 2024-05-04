@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vector Recommender</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+</head>
+<body>
+    <form method="POST">
+        <input type="text" id="product" name="product" placeholder="Enter a product" required>
+        <input type="submit" value="Recommend">
+    </form>
+    {% if recommendations %}
+        <h2>Recommended Products:</h2>
+        <ul>
+            {% for product in recommendations %}
+                <li>{{ product }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <script>
+    $(function() {
+        $("#product").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "/autocomplete",
+                    data: {
+                        q: request.term
+                    },
+                    success: function(data) {
+                        response(data.matching_results);
+                    }
+                });
+            },
+            minLength: 2,
+        });
+    });
+    </script>
+</body>
+</html>
