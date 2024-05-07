@@ -1,3 +1,4 @@
+# vector_result.py
 from flask import Flask, render_template, request, redirect, url_for
 import os
 import numpy as np
@@ -28,7 +29,7 @@ model = tensorflow.keras.Sequential([model, GlobalMaxPooling2D()])
 # Load dataset
 df = pd.read_csv('cleaned_data.csv')
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 # Fill NaN values with an empty string
 df['Description'] = df['Description'].fillna('')
@@ -57,13 +58,6 @@ def recommend(features):
 def index():
     if request.method == 'POST':
         query = request.form['query']
-        
-        # Check if an image file was uploaded
-        image = request.files.get('image')
-        if image:
-            # Use pytesseract to extract text from the image
-            img = Image.open(image)
-            query = pytesseract.image_to_string(img)
 
         # Process query using TF-IDF
         tfidf_query = vectorizer.transform([query])
@@ -80,6 +74,34 @@ def index():
         description_paragraph = ' '.join(sentence for sim, sentence in top_sentences)
 
         return render_template('vector_result.html', query=query, description_paragraph=description_paragraph, recommendations=recommendations.to_dict(orient='records'))
+    
+    return render_template('index.html')  # Create an index.html form where users can enter their search query
+
+@app.route('/ocr', methods=['GET', 'POST'])
+def ocr():
+    if request.method == 'POST':
+        # Check if an image file was uploaded
+        image = request.files.get('image')
+        if image:
+            # Use pytesseract to extract text from the image
+            img = Image.open(image)
+            query = pytesseract.image_to_string(img)
+
+            # Process query using TF-IDF
+            tfidf_query = vectorizer.transform([query])
+
+            # Compute cosine similarity between query and all products
+            cosine_sim = cosine_similarity(tfidf_query, tfidf_matrix).flatten()
+
+            # Get top 5 most similar products
+            top_indices = cosine_sim.argsort()[:-6:-1]
+            recommendations = df.iloc[top_indices]
+
+            # Generate description paragraph
+            top_sentences = heapq.nlargest(5, zip(cosine_sim, df['Description']))
+            description_paragraph = ' '.join(sentence for sim, sentence in top_sentences)
+
+            return render_template('vector_result.html', query=query, description_paragraph=description_paragraph, recommendations=recommendations.to_dict(orient='records'))
     
     return render_template('index.html')  # Create an index.html form where users can enter their search query
 

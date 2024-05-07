@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +7,17 @@
     <title>Product Search</title>
 </head>
 <body>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" action="/">
         <label for="query">Search for a product:</label><br>
         <input type="text" id="query" name="query"><br>
         <br>
         <br>
         <br>
-
+        <input type="submit" value="Search">
+    </form>
+    <br> <br>
+    <form method="POST" enctype="multipart/form-data" action="/ocr">
         <label for="image">Or upload OCR text image or handwritten txt :</label><br>
-
         <input type="file" id="image" name="image" accept="image/*"><br>
         <br>
         <br>
