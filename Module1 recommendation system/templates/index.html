@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Search</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="query">Search for a product:</label><br>
+        <input type="text" id="query" name="query"><br>
+        <br>
+        <br>
+        <br>
+
+        <label for="image">Or upload OCR text image or handwritten txt :</label><br>
+
+        <input type="file" id="image" name="image" accept="image/*"><br>
+        <br>
+        <br>
+        <input type="submit" value="Search">
+    </form>
+    <br> <br>
+    <label for="image">Or Search with an image :</label><br>
+    <button onclick="location.href='/cnn'">
+        <img src="/static/camera_icon.png" alt="Camera Icon">
+    </button>
+</body>
+</html>

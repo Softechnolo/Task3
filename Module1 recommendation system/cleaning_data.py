@@ -60,5 +60,8 @@ df['Description'].fillna('', inplace=True)
 # Remove duplicates by InvoiceNo
 df = df.drop_duplicates(subset='InvoiceNo', keep='first')
 
+# Remove duplicates by 'Description'
+df = df.drop_duplicates(subset='Description', keep='first')
+
 # Save the cleaned dataframe to a new CSV file
 df.to_csv('cleaned_data.csv', index=False)
